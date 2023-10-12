@@ -1,9 +1,26 @@
 
-Sienna White 
+Sienna White
+siennaw@berkeley.edu 
 July 27 2023
 
-I am going to try and document how best to run WPS to convert GRIB
-files from HRRR-Smoke model runs into input files for GSI. I created
+A huge part of GSI involves taking binary files (GRIB) and converting them to wrfinput files, which are netcdf files. This repository is designed to facilitate that process.
+
+There are four main steps that are involved in creating wrfinput files listed below. Three of them are housed under the "WPS" software, while the last exectuable "real.exe" is part of the WRF suite. 
+ 
+ [WPS Programs] (input file : namelist.wps) 
+ 
+     (1) ungrib  --> takes grib files and "unpacks" them to an interim file format. Ungrib will call a Variance Table. 
+     
+     (2) geogrid --> creates geogrid netcdf object with the specified spatial dimensions you'd like for your domain
+     
+     (3) metgrid --> interpolates ungribbed-object onto the geogrid to create a met_em netcdf file 
+     
+ [WRF Program] (input file : namelist.input) 
+ 
+     (4) real    --> creates wrfinput file from the met_em netcdf file. 
+     
+     
+I am going to try and document how best to run WPS to convert GRIB files from HRRR-Smoke model runs into input files for GSI. I created
 this directory as a base directory with all the needed files (thank you
 Adam!) 
 
