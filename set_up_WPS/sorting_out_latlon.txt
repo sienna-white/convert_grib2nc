@@ -1,0 +1,28 @@
+
+
+39 N (top 1/3 latitude)
+35 N (lower 1/3 latitude)
+37 N (center latitude)
+-120 E (rough center longitude)
+
+
+This geogrid set up shows all of CA :
+
+&geogrid
+ parent_id         = 1,
+ parent_grid_ratio = 1,
+ i_parent_start    = 1,
+ j_parent_start    = 1,
+ e_we          = 340,
+ e_sn          = 400,
+ geog_data_res = 'modis_15s+modis_fpar+modis_lai+30s',
+ dx = 3000,
+ dy = 3000,
+ map_proj =  'lambert',
+ ref_lat   = 37,
+ ref_lon   = -119,
+ truelat1  = 39,
+ truelat2  = 35,
+ stand_lon = -119,
+ geog_data_path = '/global/home/groups/co_aiolos/chow/geog_v3.6',
+/

@@ -1,0 +1,37 @@
+&share
+ wrf_core = 'ARW',
+ max_dom = 1,
+ start_date = 'REPLACE_START_DATE',
+ end_date   = 'REPLACE_END_DATE',
+ interval_seconds = 3600,
+ io_form_geogrid = 2,
+/
+
+&geogrid
+ parent_id         = 1,
+ parent_grid_ratio = 1,
+ i_parent_start    = 1,
+ j_parent_start    = 1,
+ e_we          = 340,
+ e_sn          = 460,
+ geog_data_res = 'modis_15s+modis_fpar+modis_lai+30s',
+ dx = 3000,
+ dy = 3000,
+ map_proj =  'lambert',
+ ref_lat   = 38,
+ ref_lon   = -119,
+ truelat1  = 40,
+ truelat2  = 36,
+ stand_lon = -119,
+ geog_data_path = '/global/home/groups/co_aiolos/chow/geog_v3.6',
+/
+
+&ungrib
+ out_format = 'WPS',
+ prefix = 'FILE',
+/
+
+&metgrid
+ fg_name = 'FILE'
+ io_form_metgrid = 2,
+/

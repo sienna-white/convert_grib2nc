@@ -1,0 +1,38 @@
+&share
+ wrf_core = 'ARW',
+ max_dom = 4,
+ start_date = '2018-11-08 12:00:00',
+ end_date   = '2018-11-09 23:00:00',
+ interval_seconds = 3600, 
+ io_form_geogrid = 2,
+/
+
+&geogrid
+ parent_id         =    1,     1,     2,     3,     4,     5,
+ parent_grid_ratio =    1,    10,     5,     5,
+ i_parent_start    =    1,   163,   141,   120,
+ j_parent_start    =    1,   147,   262,   303,
+ e_we              =  360,   361,   361,   541,
+ e_sn              =  360,   401,   501,   701,
+ geog_data_res     = 'gtopo_2m+nlcd_30m', 'g_topo_30s+nlcd_30m', 'highres_cv+nlcd_30m', 'highres_cv+nlcd_30m', 'highres_cv',
+! geog_data_res     = 'gtopo_2m', 'g_topo_30s', 'highres_cv', 'highres_cv', 'highres_cv', 
+ dx = 5000,
+ dy = 5000,
+ map_proj = 'lambert',
+ ref_lat   =  36.3647,
+ ref_lon   = -97.4055,
+ truelat1  =  36.3647,
+ truelat2  =  36.3647,
+ stand_lon = -97.4055,
+ geog_data_path = '/global/home/groups/co_aiolos/chow/geog_v3.6',
+/
+
+&ungrib
+ out_format = 'WPS',
+ prefix = 'FILE_SW',
+/
+
+&metgrid
+ fg_name = 'FILE_SW'
+ io_form_metgrid = 2,
+/
