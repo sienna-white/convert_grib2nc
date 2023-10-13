@@ -67,7 +67,7 @@ for hour in $(seq $hour0 $hourF); do
 
   # Rename the output WRF input file to have the date appended.
   mv wrfinput_d01 wrfinput_d01_$date
-  rm rsl*
+  #rm rsl*
   
 done
 

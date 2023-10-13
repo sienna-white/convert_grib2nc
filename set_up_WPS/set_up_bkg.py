@@ -1,92 +1,89 @@
+######### USER INPUT #############
+
+GENERATE_LIST_OF_FOLDERS = False 
+
+####################################
+
+import os 
+import sys
+if os.getcwd() not in sys.path: # Add the current directory to the Python path
+    sys.path.append(current_directory)
+import pandas as pd 
+import set_up_bkg_lib as bkg 
 
 
-class WPSRun:
-    '''
-    Class definition for Regex objects
-    '''
-    def __init__(self, folder):
-        # assign input text to self.text
-        self.folder = folder 
-        
-        try:
-            date = pd.to_datetime(folder, format='%Y%m%d%H')
-            self.date        = date
-            self.start_time  = date
-            self.end_time    = date.replace(hour=23, minute=0, second=0)
-            self.end_time_str = self.end_time.strftime('%Y-%m-%d_%H:00:00')
-            self.start_time_str = self.start_time.strftime('%Y-%m-%d_%H:00:00')
-            print('Created class object for GRIB folder \n \
-                  \t Dates : %s - %s' % (self.start_time_str - self.end_time_str))
-        except:
-            print('Erroring initializing file! Check folder name: \t%s' % folder) 
+# Where the grib files live 
+grib_directory = '/global/home/users/siennaw/scratch/data/grib/'
 
-    def sub(self, pattern1, pattern2):
-        # regex sub
-        self.text = re.sub(pattern1, pattern2, self.text)
-        return self
+# Where we will process our files
+working_directory = '/global/scratch/users/siennaw/smoke/data/bkg/grib2wrf/'
 
-    def write_namelist_wps(self, dest_dir):
-        '''' Write a namelist file to convert all the grib files in that folder. ''' 
+# WPS files 
+wps_fn = '../wps_files/'
 
-        with open('namelist_template.txt') as f:
-            namelist = f.read()
-            namelist = namelist.replace('REPLACE_START_DATE', self.start_time_str)
-            namelist = namelist.replace('REPLACE_END_DATE', self.end_time_str)
+# List of folders to process 
+fout='folders2process.txt'
 
-            fout = os.path.join(dest_dir, 'namelist.wps')
-            with open(fout, 'w') as f:
-                f.write(namelist)
+# Shell script to launch written jobs 
+fshell = 'jobs2run.sh'
 
-        print('\t Wrote namelist.wps file: \t%s' % fout)
+# Delete shell script if it already exists 
+if os.path.exists(fshell):
+    os.remove(fshell)
 
-    def write_namelist_real(self, dest_dir):
 
-        with open('namelist_real_template.txt') as f:
+# (1) : Look at GRIB Folders, make a list of folders to process
+if GENERATE_LIST_OF_FOLDERS: 
 
-            namelist = f.read()
-            namelist = namelist.replace('REPLACE_START_DATE',   self.start_time_str)        
-            namelist = namelist.replace('REPLACE_START_MONTH',  str(self.start_time.month))
-            namelist = namelist.replace('REPLACE_START_DAY',    str(self.start_time.day))
-            namelist = namelist.replace('REPLACE_START_HOUR',   str(self.start_time.hour))
-            namelist = namelist.replace('REPLACE_START_YEAR',   str(self.start_time.year))
+    # Get list of folders with grib files. Each folder is named after the date. 
+    grib_folders = util.get_folders_in_directory(grib_directory)
 
-            # END YEAR, MONTH, DAY are the same as the start date & the end time is always 23:00
-            fout = os.path.join(dest_dir, 'namelist.input')
-            with open(fout, 'w') as f:
-                f.write(namelist)
-        print('\t Wrote namelist.input file: \t%s' % fout)
+    print('Found the following folders to convert ...')
+    with open(fout, 'w') as f:
+        for folder in grib_folders:
+            f.write(folder + '\n')
+            print(folder)
 
+    user = input("List of folders has been written. Continue running [y] or stop the script [n]?")
+    if user == 'n':
+        exit()
+    elif user == 'y':
+        pass
+    else:
+        Exception("No valid input given.")
+
+
+with open(fout, 'r') as f:
+    grib_folders = f.read()
+    grib_folders = list(grib_folders.split('\n'))
+
+# Loop through each grib folder and prep a WPS run namelist
+for folder in grib_folders[0:1]:
+
+    print('\n Processing %s' % folder)
     
-def write_job_script(self, working_directory, grib_file_path):
-    ''' Write a slurm batch script for the whole WPS process
-    input:
-        * working directory : folder you want to write script in
-        * grib_file_path : folder where the grib files live 
-        * folder : string with the name of the folder / file extension. should be the date in str form.
-    ''' 
+    run = bkg.WPSRun(folder)
 
-    with open('submit_wps_template.txt') as f:
-        job_name = 'WPS_%s' % self.folder
-        submit_wps_job = f.read()
-        grib_file_path = '%s/*' % grib_file_path
-        submit_wps_job = submit_wps_job.replace('REPLACE_WORKING_DIRECTORY', working_directory)
-        submit_wps_job = submit_wps_job.replace('REPLACE_GRIB_FILE_PATH', grib_file_path)
-        submit_wps_job = submit_wps_job.replace('REPLACE_JOB_NAME', job_name)
-        submit_wps_job = submit_wps_job.replace('REPLACE_START_HOUR', str(self.start_time.hour)) 
-        submit_wps_job = submit_wps_job.replace('REPLACE_DATE', self.start_time.strftime('%Y-%m-%d'))
+    # Path where the unprocessed GRIB files live
+    grib_file_path = os.path.join(grib_directory, folder, 'postprd')
 
-        
-        fout = os.path.join(working_directory, 'submit_wps_job.sh')
-        with open(fout, 'w') as f:
-            f.write(submit_wps_job)
-    print('Wrote submit_wps_job.sh --> %s' % fout)
-    # A bit confusing, but we want to now return the command-line expression needed 
-    # to execute this script. This will be two lines of code -- opening the directory,
-    # and then batching the script
-    command_line = []
-    # Open the working directory
-    command_line.append('cd %s' % working_directory)
-    # Submit the job 
-    command_line.append('sbatch %s ' % fout)
+    # Create working folder / Where we'll process the GRIB files 
+    run.create_working_folder(working_directory)
 
-    return (command_line)
+    # Write a namelist for WPS executables 
+    run.write_namelist_wps()
+
+    # Write a namelist for real.exe 
+    run.write_namelist_real()
+
+    # Write sbatch submission script for slurm 
+    run.write_slurm_script(grib_file_path) 
+
+    # Copy over supporting files 
+    print('... Copying over WPS files to working folder ...')
+    bkg.copy_folder_contents(wps_fn, run.working_folder)
+
+    # Write down shell command to launch that run 
+    run.write_shell_command(fshell)
+
+    print('%s is ready to run! \n\n' % folder)

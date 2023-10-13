@@ -34,7 +34,7 @@ def create_folder(working_directory, folder_name):
     except FileExistsError:
         print(f"... Folder '{folder_path}' already exists")
          
-    return folder_path
+
 
 def folder_name_to_date(folder):
     ''' Take the sort of bizarre name of our GRIB folders, which are the dates the files are from.
@@ -85,7 +85,7 @@ def write_namelist_real(start_time, end_time, dest_dir):
 def copy_folder_contents(source_folder, destination_folder):
 # thank you chat gpt for this
    import os
-import shutil
+    import shutil
 
 def copy_folder_contents(source_folder, destination_folder):
     try:
