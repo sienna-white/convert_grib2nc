@@ -23,9 +23,10 @@ For more info on WPS, I recommend :  [https://ral.ucar.edu/sites/default/files/p
  
      (4) real    --> creates wrfinput file from the met_em netcdf file. 
      
-Thus, for each grib file, we need to run 4 (!) executables and create 2 input files (namelist.wps, and namelist.input.) This package is designed to automate that process. 
+Thus, for each grib file, we need to run 4 (!) executables and create 2 input files (namelist.wps, and namelist.input.) 
 
-In order to start conversion, you need a folder somewhere on scratch that contains all your grib files. All the grib files should be in their own subdirectory. Ideally it will look something like this:
+# Step 1 : Downloading grib files + directory structure 
+In order to start the conversion, you need a folder somewhere on scratch that contains all your grib files. All the grib files should be in their own subdirectory. Ideally it will look something like this:
 
    grib_folder/
       2018110800/
@@ -34,7 +35,9 @@ In order to start conversion, you need a folder somewhere on scratch that contai
       2018110800/ 
       ... etc 
   
-From what I can tell, when you download grib files from the internet, they come tarballed as these directories. So hopefully getting this directory structure isn't too much of a hassle. Each folder name contains very important info about the date of the grib files. The format is [YEAR][MONTH][DAY][HOUR]. 
+From what I can tell, when you download grib files from the internet, they come tarballed as these directories. So hopefully getting this directory structure isn't too much of a hassle. Each folder name contains very important info about the date of the grib files. The format is [YEAR][MONTH][DAY][HOUR]. Inside, the grib files represent forecasts starting \textit{from that start time.}. So if the name of the folder ends in 18 (6pm) than the first file is the forecast at 6pm, second file is 7pm, etc. 
+
+
 
 I am going to try and document how best to run WPS to convert GRIB files from HRRR-Smoke model runs into input files for GSI. I created
 this directory as a base directory with all the needed files (thank you
