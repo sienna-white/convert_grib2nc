@@ -47,6 +47,7 @@ class WPSRun:
             print('\t Dates : %s - %s' % (self.start_time_str , self.end_time_str))
         except:
             print('Erroring initializing file! Check folder name: \t%s' % folder) 
+            self.does_not_exist = True
 
     def create_working_folder(self, working_directory): 
         ''' Create a folder in a specified directory.
@@ -157,7 +158,7 @@ class WPSRun:
         with open(fout, 'a') as f:
             f.write('# Launch run for %s\n' % self.start_time_str)
             f.write('cd %s\n'     % self.working_folder)
-            f.write('sbatch %s\n\n' % self.job_name)
+            f.write('sbatch submit_wps_job.sh')
         return 
 
    

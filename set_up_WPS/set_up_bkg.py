@@ -10,13 +10,15 @@ if os.getcwd() not in sys.path: # Add the current directory to the Python path
     sys.path.append(current_directory)
 import pandas as pd 
 import set_up_bkg_lib as bkg 
+import stat
+
 
 
 # Where the grib files live 
 grib_directory = '/global/home/users/siennaw/scratch/data/grib/'
 
 # Where we will process our files
-working_directory = '/global/scratch/users/siennaw/smoke/data/bkg/grib2wrf/'
+working_directory = '/global/scratch/users/siennaw/tmp/data/bkg/grib2wrf/'
 
 # WPS files 
 wps_fn = '../wps_files/'
@@ -57,12 +59,22 @@ with open(fout, 'r') as f:
     grib_folders = f.read()
     grib_folders = list(grib_folders.split('\n'))
 
+# Remove empty strings 
+grib_folders = list(filter(None, test_list))
+
 # Loop through each grib folder and prep a WPS run namelist
-for folder in grib_folders[0:1]:
+for folder in grib_folders:
 
     print('\n Processing %s' % folder)
     
     run = bkg.WPSRun(folder)
+
+ 
+    if run.does_not_exist:
+        print('Skipping set-up for %s.' % folder)
+        print('* This might be because the folder name is not a date, or because \
+                it\'s formatted incorrectly. Double-check %s.' % fout)
+        continue 
 
     # Path where the unprocessed GRIB files live
     grib_file_path = os.path.join(grib_directory, folder, 'postprd')
@@ -87,3 +99,8 @@ for folder in grib_folders[0:1]:
     run.write_shell_command(fshell)
 
     print('%s is ready to run! \n\n' % folder)
+
+# Make the shell script exectuable 
+st = os.stat(fshell)
+os.chmod(fshell, st.st_mode | stat.S_IEXEC)
+print('To submit jobs, run: \n \t $ ./%s' % fshell)
