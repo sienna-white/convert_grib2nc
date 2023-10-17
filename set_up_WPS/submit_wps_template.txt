@@ -54,6 +54,8 @@ hour0=REPLACE_START_HOUR
 hourF=23
 DATE=REPLACE_DATE
 
+source activate geo_env 
+
 for hour in $(seq $hour0 $hourF); do
 
   echo "Writing namelist.input for T0=$hour" >> real.out
@@ -67,8 +69,40 @@ for hour in $(seq $hour0 $hourF); do
 
   # Rename the output WRF input file to have the date appended.
   mv wrfinput_d01 wrfinput_d01_$date
-  #rm rsl*
+
+    ## COPY OVER SMOKE TO THE OUTPUT! ## 
   
+  cat << EOF > ./add_massden_as_PM25.py
+import xarray as xr
+
+# Metgrid 
+path = '${met_fn}'
+data = xr.open_dataset(path)
+
+# WRFINPUT 
+path = '${wrf_fn}'
+data_out = xr.open_dataset(path)
+
+# Now we try some substitution trickery
+smoke_var_name = 'PM2_5_DRY'
+data_out[smoke_var_name] = data_out.T.copy(deep=True)
+
+# Correct the units + description
+data_out[smoke_var_name].attrs['units'] = data['MASSDEN'].attrs['units']
+data_out[smoke_var_name].attrs['description'] = data['MASSDEN'].attrs['description']
+
+vertical_layers = data_out.bottom_top
+for i in vertical_layers:
+  data_out[smoke_var_name][dict(bottom_top=i)] = data['MASSDEN'][dict(num_metgrid_levels=i)]
+
+data_out.to_netcdf('${wrf_fn}.nc')
+EOF
+  echo "running python" >> real.out
+  python ./add_massden_as_PM25.py  >> real.out
+
+  
+done
+
 done
 
 echo "Done with REAL"
