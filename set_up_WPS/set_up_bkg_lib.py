@@ -4,6 +4,17 @@ import shutil
 import pandas as pd 
 
 
+def get_folders_in_directory(directory_path):
+    ''' Get a list of folders in a directory ''' 
+    # Check that our directory exists
+    if not os.path.isdir(directory_path):
+        raise Exception("Error: Directory not found.")
+    # Get a list of folders in the directory
+    folders = [entry for entry in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, entry))]
+    if len(folders) == 0:
+        raise Exception("No folders found in the directory.")
+    return folders
+
 def copy_folder_contents(source_folder, destination_folder):
     try:
         # Create the destination folder if it doesn't exist
@@ -45,6 +56,7 @@ class WPSRun:
             self.start_time_str = self.start_time.strftime('%Y-%m-%d_%H:00:00')
             print('Created class object for GRIB folder') 
             print('\t Dates : %s - %s' % (self.start_time_str , self.end_time_str))
+            self.does_not_exist = False
         except:
             print('Erroring initializing file! Check folder name: \t%s' % folder) 
             self.does_not_exist = True
@@ -158,7 +170,7 @@ class WPSRun:
         with open(fout, 'a') as f:
             f.write('# Launch run for %s\n' % self.start_time_str)
             f.write('cd %s\n'     % self.working_folder)
-            f.write('sbatch submit_wps_job.sh')
+            f.write('sbatch submit_wps_job.sh \n')
         return 
 
    

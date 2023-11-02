@@ -38,7 +38,7 @@ if os.path.exists(fshell):
 if GENERATE_LIST_OF_FOLDERS: 
 
     # Get list of folders with grib files. Each folder is named after the date. 
-    grib_folders = util.get_folders_in_directory(grib_directory)
+    grib_folders = bkg.get_folders_in_directory(grib_directory)
 
     print('Found the following folders to convert ...')
     with open(fout, 'w') as f:
@@ -60,7 +60,7 @@ with open(fout, 'r') as f:
     grib_folders = list(grib_folders.split('\n'))
 
 # Remove empty strings 
-grib_folders = list(filter(None, test_list))
+grib_folders = list(filter(None, grib_folders))
 
 # Loop through each grib folder and prep a WPS run namelist
 for folder in grib_folders:
