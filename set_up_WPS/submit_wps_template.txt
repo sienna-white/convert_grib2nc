@@ -54,12 +54,13 @@ hour0=REPLACE_START_HOUR
 hourF=23
 DATE=REPLACE_DATE
 
-source activate geo_env 
+
 
 for hour in $(seq $hour0 $hourF); do
 
   echo "Writing namelist.input for T0=$hour" >> real.out
   date="${DATE}_${hour}:00:00"
+  datenum="${DATE}{hour}"
   sed -r -i.bak s/"start_hour[[:space:]]*=[[:space:]]*[[:digit:]]*,"/"start_hour= ${hour},"/g namelist.input
   end_hour=$((${hour} + 1))
   sed -r -i.bak s/"end_hour[[:space:]]*=[[:space:]]*[[:digit:]]*,"/"end_hour= ${hour},"/g namelist.input
@@ -70,7 +71,10 @@ for hour in $(seq $hour0 $hourF); do
   # Rename the output WRF input file to have the date appended.
   mv wrfinput_d01 wrfinput_d01_$date
 
-  
+  met_fn=met_em.d01.${date}.nc
+  wrf_fn=wrfinput_d01
+  wrf_fn_out=wrfinput_d01_${datenum}.nc
+
   ## COPY OVER SMOKE TO THE OUTPUT! ## 
 cat << EOF > ./add_massden_as_PM25.py
 import xarray as xr
