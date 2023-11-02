@@ -70,9 +70,9 @@ for hour in $(seq $hour0 $hourF); do
   # Rename the output WRF input file to have the date appended.
   mv wrfinput_d01 wrfinput_d01_$date
 
-    ## COPY OVER SMOKE TO THE OUTPUT! ## 
   
-  cat << EOF > ./add_massden_as_PM25.py
+  ## COPY OVER SMOKE TO THE OUTPUT! ## 
+cat << EOF > ./add_massden_as_PM25.py
 import xarray as xr
 
 # Metgrid 
@@ -88,21 +88,21 @@ smoke_var_name = 'PM2_5_DRY'
 data_out[smoke_var_name] = data_out.T.copy(deep=True)
 
 # Correct the units + description
-data_out[smoke_var_name].attrs['units'] = data['MASSDEN'].attrs['units']
+data_out[smoke_var_name].attrs['units'] = 'ug/m3' # UNITS = ug/m3! 
 data_out[smoke_var_name].attrs['description'] = data['MASSDEN'].attrs['description']
 
 vertical_layers = data_out.bottom_top
+
 for i in vertical_layers:
-  data_out[smoke_var_name][dict(bottom_top=i)] = data['MASSDEN'][dict(num_metgrid_levels=i)]
+  data_out[smoke_var_name][dict(bottom_top=i)] = data['MASSDEN'][dict(num_metgrid_levels=i)] 
+  # We need to index array of data rather than use isel / sel. found this out the hard way.
 
 data_out.to_netcdf('${wrf_fn}.nc')
 EOF
+
   echo "running python" >> real.out
-  python ./add_massden_as_PM25.py  >> real.out
-
+  conda run -n geo_env python ./add_massden_as_PM25.py  >> real.out
   
-done
-
 done
 
 echo "Done with REAL"
