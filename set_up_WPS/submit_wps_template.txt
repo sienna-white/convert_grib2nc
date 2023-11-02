@@ -111,10 +111,10 @@ echo "Done with REAL"
 
 # Create stdout for this processing run
 stdout=REPLACE_JOB_NAME.out
-echo ungrib.out   >  $stdout
-echo geogrid.out  >> $stdout
-echo metgrid.out  >> $stdout
-echo real.out     >> $stdout 
+cat ungrib.out   >  $stdout
+cat geogrid.out  >> $stdout
+cat metgrid.out  >> $stdout
+cat real.out     >> $stdout 
 
 echo "Done processing grib file, wrfinput[s] created." 
 
