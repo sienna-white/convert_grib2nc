@@ -41,7 +41,7 @@
  s_we                                = 1,     
  s_sn                                = 1,   
  e_we          = 340,
- e_sn          = 430,
+ e_sn          = 460,
  s_vert                              = 1,  
  e_vert                              = 51, 
  p_top_requested                     = 10000, 
