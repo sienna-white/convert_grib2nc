@@ -156,8 +156,7 @@ class WPSRun:
             submit_wps_job = submit_wps_job.replace('REPLACE_JOB_NAME', job_name)
             submit_wps_job = submit_wps_job.replace('REPLACE_START_HOUR', str(self.start_time.hour)) 
             submit_wps_job = submit_wps_job.replace('REPLACE_DATE', self.start_time.strftime('%Y-%m-%d'))
-
-            
+            submit_wps_job = submit_wps_job.replace('REPLACE_FULL_DATE', self.date)
             fout = os.path.join(working_directory, 'submit_wps_job.sh')
             with open(fout, 'w') as f:
                 f.write(submit_wps_job)
