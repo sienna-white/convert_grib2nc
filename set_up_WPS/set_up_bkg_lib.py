@@ -54,6 +54,7 @@ class WPSRun:
             self.end_time    = date.replace(hour=23, minute=0, second=0)
             self.end_time_str = self.end_time.strftime('%Y-%m-%d_%H:00:00')
             self.start_time_str = self.start_time.strftime('%Y-%m-%d_%H:00:00')
+            self.date_standard = folder
             print('Created class object for GRIB folder') 
             print('\t Dates : %s - %s' % (self.start_time_str , self.end_time_str))
             self.does_not_exist = False
@@ -156,7 +157,7 @@ class WPSRun:
             submit_wps_job = submit_wps_job.replace('REPLACE_JOB_NAME', job_name)
             submit_wps_job = submit_wps_job.replace('REPLACE_START_HOUR', str(self.start_time.hour)) 
             submit_wps_job = submit_wps_job.replace('REPLACE_DATE', self.start_time.strftime('%Y-%m-%d'))
-            submit_wps_job = submit_wps_job.replace('REPLACE_FULL_DATE', self.date)
+            submit_wps_job = submit_wps_job.replace('REPLACE_FULL_DATE', self.date_standard)
             fout = os.path.join(working_directory, 'submit_wps_job.sh')
             with open(fout, 'w') as f:
                 f.write(submit_wps_job)

@@ -58,6 +58,9 @@ DATE=REPLACE_DATE
 
 for hour in $(seq $hour0 $hourF); do
 
+  hour=$(printf %02d $hour)
+  echo $hour 
+
   echo "Writing namelist.input for T0=$hour" >> real.out
   date="${DATE}_${hour}:00:00"
   datenum="REPLACE_FULL_DATE"
@@ -84,7 +87,7 @@ path = '${met_fn}'
 data = xr.open_dataset(path)
 
 # WRFINPUT 
-path = '${wrf_fn}'
+path = 'wrfinput_d01_${date}'
 data_out = xr.open_dataset(path)
 
 # Now we try some substitution trickery
