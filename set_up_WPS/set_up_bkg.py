@@ -46,7 +46,7 @@ if GENERATE_LIST_OF_FOLDERS:
             f.write(folder + '\n')
             print(folder)
 
-    user = input("List of folders has been written. Continue running [y] or stop the script [n]?")
+    user = input("List of folders has been written. Continue running (enter: y) or stop the script (enter: n)?")
     if user == 'n':
         exit()
     elif user == 'y':

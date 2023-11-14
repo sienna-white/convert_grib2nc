@@ -58,11 +58,7 @@ DATE=REPLACE_DATE
 
 for hour in $(seq $hour0 $hourF); do
 
-  hour=$(printf %02d $hour)
-  echo $hour 
 
-  echo "Writing namelist.input for T0=$hour" >> real.out
-  date="${DATE}_${hour}:00:00"
   datenum="REPLACE_FULL_DATE"
   sed -r -i.bak s/"start_hour[[:space:]]*=[[:space:]]*[[:digit:]]*,"/"start_hour= ${hour},"/g namelist.input
   end_hour=$((${hour} + 1))
@@ -70,6 +66,13 @@ for hour in $(seq $hour0 $hourF); do
 
   echo "Running real..."    >> real.out
   ./real2018.exe   >> real.out
+
+  # Add leading zero to number if needed (aka, need midnight as 00, not 0; 1 am as 01; etc)
+  hour=$(printf %02d $hour)
+  echo $hour 
+
+  echo "Writing namelist.input for T0=$hour" >> real.out
+  date="${DATE}_${hour}:00:00"
 
   # Rename the output WRF input file to have the date appended.
   mv wrfinput_d01 wrfinput_d01_$date
