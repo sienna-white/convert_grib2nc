@@ -1,6 +1,14 @@
 ######### USER INPUT #############
 
-GENERATE_LIST_OF_FOLDERS = False 
+'''
+If this is false, the script will run and process ALL the files in the text file
+"folders2process.txt". If it is true, it will check your grib directory and write 
+a list of all folders w/ grib files to "folders2process.txt" and then check if you want
+to continue. 
+
+
+'''
+GENERATE_LIST_OF_FOLDERS = False # True or False
 
 ####################################
 
@@ -14,12 +22,14 @@ import stat
 
 
 
-# Where the grib files live 
-grib_directory = '/global/home/users/siennaw/scratch/data/grib/'
+# Where the grib files live (Do not change)
+grib_directory = '/global/scratch/users/siennaw/scratch/data/grib/'
 
-# Where we will process our files
+# Where we will process our files (Change to a folder on your scratch)
 working_directory = '/global/scratch/users/siennaw/tmp/data/bkg/grib2wrf/'
 
+
+# Do not change these. 
 # WPS files 
 wps_fn = '../wps_files/'
 
