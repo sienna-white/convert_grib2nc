@@ -101,7 +101,12 @@ for folder in grib_folders:
 
     # Copy over supporting files 
     print('... Copying over WPS files to working folder ...')
-    bkg.copy_folder_contents(wps_fn, run.working_folder)
+    run.copy_wps_files() 
+    run.copy_executables()
+
+    # Copy over supporting files 
+    # print('... Copying over WPS files to working folder ...')
+    # bkg.copy_folder_contents(wps_fn, run.working_folder)
 
     # Write down shell command to launch that run 
     run.write_shell_command(fshell)
