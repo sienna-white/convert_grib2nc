@@ -116,7 +116,7 @@ class WPSRun:
 
         # Get a list of all files and subdirectories in the source folder
         items = os.listdir(source_folder)
-
+        try:
             for item in items:
                 source_item_path = os.path.join(source_folder, item)
                 destination_item_path = os.path.join(destination_folder, item)
