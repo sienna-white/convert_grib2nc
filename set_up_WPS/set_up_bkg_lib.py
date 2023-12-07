@@ -110,7 +110,24 @@ class WPSRun:
                 f.write(namelist)
         print('\t Wrote namelist.input file: \t%s' % fout)
 
-        
+    def copy_executables(self):
+        destination_folder = self.working_folder
+        source_folder = '/global/scratch/users/siennaw/data/executables/'
+
+        # Get a list of all files and subdirectories in the source folder
+        items = os.listdir(source_folder)
+
+            for item in items:
+                source_item_path = os.path.join(source_folder, item)
+                destination_item_path = os.path.join(destination_folder, item)
+
+                # If the item is a file, copy it to the destination folder
+                if os.path.isfile(source_item_path):
+                    shutil.copy(source_item_path, destination_item_path)
+                    
+        except Exception as e:
+            print(f"Error copying folder contents: {e}")
+
     def copy_wps_files(self):
         destination_folder = self.working_folder
         source_folder = '../wps_files/'
