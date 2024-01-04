@@ -115,11 +115,11 @@ EOF
   echo "running python" >> real.out
   conda run -n geo_env python ./add_massden_as_PM25.py  >> real.out
   
-  destination_directory=/global/scratch/users/siennaw/data/wrf
+  output_directory=REPLACE_OUTPUT_DIRECTORY
   # Check if python script ran successfully 
   if [ -e "$wrf_fn_out" ]; then
       # File exists, so move it to the destination directory
-      mv $wrf_fn_out $destination_directory
+      mv $wrf_fn_out $output_directory
       rm $wrf_fn
       echo "Moved WRF file w/ smoke to output directory!" >> real.out
   else

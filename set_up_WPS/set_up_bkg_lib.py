@@ -155,7 +155,7 @@ class WPSRun:
         except Exception as e:
             print(f"Error copying folder contents: {e}")
 
-    def write_slurm_script(self, grib_file_path):
+    def write_slurm_script(self, grib_file_path, output_directory):
         ''' Write a slurm batch script for the whole WPS process
         input:
             * working directory : folder you want to write script in
@@ -175,6 +175,8 @@ class WPSRun:
             submit_wps_job = submit_wps_job.replace('REPLACE_START_HOUR', str(self.start_time.hour)) 
             submit_wps_job = submit_wps_job.replace('REPLACE_DATE', self.start_time.strftime('%Y-%m-%d'))
             submit_wps_job = submit_wps_job.replace('REPLACE_FULL_DATE', self.date_standard)
+            submit_wps_job = submit_wps_job.replace('REPLACE_OUTPUT_DIRECTORY', output_directory)
+            
             fout = os.path.join(working_directory, 'submit_wps_job.sh')
             with open(fout, 'w') as f:
                 f.write(submit_wps_job)

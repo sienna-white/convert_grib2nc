@@ -1,5 +1,6 @@
-######### USER INPUT #############
 '''
+How To Process GRIB files Using this Script!!! 
+
 ** INPUTS ** 
 There are three user inputs required to run this script. I will explain each of them
 below.
@@ -40,6 +41,7 @@ in your working directory. The script will then print out a shell command to sub
 jobs to slurm. You can copy and paste that into terminal to launch the jobs! 
 '''
 
+######### USER INPUT #############
 GENERATE_LIST_OF_FOLDERS = False # True or False
 
 # Where we will process our files (Change to a folder on your scratch)
@@ -130,7 +132,7 @@ for folder in grib_folders:
     run.write_namelist_real()
 
     # Write sbatch submission script for slurm 
-    run.write_slurm_script(grib_file_path) 
+    run.write_slurm_script(grib_file_path, output_directory) 
 
     # Copy over supporting files 
     print('... Copying over WPS files to working folder ...')
