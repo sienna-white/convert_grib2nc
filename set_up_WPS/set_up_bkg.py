@@ -1,13 +1,52 @@
 ######### USER INPUT #############
+'''
+** INPUTS ** 
+There are three user inputs required to run this script. I will explain each of them
+below.
+    (1) working_directory --> this is the directory that you want the actual "processing"
+                              to occur in. The script will create a bunch of folders in this
+                              directory. Think of it as sort of a workspace that you don't 
+                              mind getting pretty messy.
 
+    (2) output_directory --> this is the directory where the script will OUTPUT all finished 
+                             netcdfs. So every "completely processed" file will be saved here.
+                             All the interim stuff will stay in the working directory.
+
+    (3) GENERATE_LIST_OF_FOLDERS --> This is a boolean value (True or False). I will explain its 
+                                     significance below.
+
+
+** HOW TO USE **                                     
+In order to convert your grib files to netcdf, you will probably want to run 
+this script twice. The first time you run this, you should set 
+
+    GENERATE_LIST_OF_FOLDERS = True
+
+This instructs the script to look in the in the folder where I've put all the grib files 
+and TELLS YOU WHAT'S THERE. It will write a list of all available folders w/ grib files 
+to "folders2process.txt". It will then ask you if you want to continue. Unless you want to 
+process every single folder (unlikely) you should type 'n' for NO. 
+
+Once you've generated "folders2process.txt" you can look at the file manually and delete
+any folders you're not interested in processing. My hopes is that this workflow will enable
+better batch-scale processing. 
+
+Now that  "folders2process.txt" is ready to go, set 
+
+    GENERATE_LIST_OF_FOLDERS = False
+
+and run again! This should actually write all the input files / etc and set up the folders 
+in your working directory. The script will then print out a shell command to submit all your 
+jobs to slurm. You can copy and paste that into terminal to launch the jobs! 
 '''
-If this is false, the script will run and process ALL the files in the text file
-"folders2process.txt". If it is true, it will check your grib directory and write 
-a list of all folders w/ grib files to "folders2process.txt" and then check if you want
-to continue. 
-'''
+
 GENERATE_LIST_OF_FOLDERS = False # True or False
 
+# Where we will process our files (Change to a folder on your scratch)
+working_directory = '/global/scratch/users/siennaw/tmp/data/bkg/grib2wrf/'
+
+# Where the finished files should be saved
+output_directory = '/global/scratch/users/siennaw/tmp/DEMO/'
 ####################################
 
 import os 
@@ -19,15 +58,10 @@ import set_up_bkg_lib as bkg
 import stat
 
 
-
-# Where the grib files live (Do not change)
+#################### Do not change these. ############################## 
+# Where the grib files live 
 grib_directory = '/global/scratch/users/siennaw/scratch/data/grib/'
 
-# Where we will process our files (Change to a folder on your scratch)
-working_directory = '/global/scratch/users/siennaw/tmp/data/bkg/grib2wrf/'
-
-
-# Do not change these. 
 # WPS files 
 wps_fn = '../wps_files/'
 
@@ -40,7 +74,6 @@ fshell = 'jobs2run.sh'
 # Delete shell script if it already exists 
 if os.path.exists(fshell):
     os.remove(fshell)
-
 
 # (1) : Look at GRIB Folders, make a list of folders to process
 if GENERATE_LIST_OF_FOLDERS: 
