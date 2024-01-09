@@ -120,7 +120,7 @@ EOF
   if [ -e "$wrf_fn_out" ]; then
       # File exists, so move it to the destination directory
       mv $wrf_fn_out $output_directory
-      rm $wrf_fn
+      rm $wrfinput_d01_${date}
       echo "Moved WRF file w/ smoke to output directory!" >> real.out
   else
       # File does not exist
