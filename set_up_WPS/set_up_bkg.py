@@ -62,7 +62,7 @@ import stat
 
 #################### Do not change these. ############################## 
 # Where the grib files live 
-grib_directory = '/global/scratch/users/siennaw/scratch/data/grib/'
+grib_directory = '/global/scratch/users/siennaw/data/grib/'
 
 # WPS files 
 wps_fn = '../wps_files/'
