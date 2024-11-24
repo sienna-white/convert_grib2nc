@@ -37,6 +37,15 @@ In order to start the conversion, you need a folder somewhere on scratch that co
   
 From what I can tell, when you download grib files from the internet, they come tarballed as these directories. So hopefully getting this directory structure isn't too much of a hassle. Each folder name contains very important info about the date of the grib files. The format is [YEAR][MONTH][DAY][HOUR]. Inside, the grib files represent forecasts starting \textit{from that start time.}. So if the name of the folder ends in 18 (6pm) than the first file is the forecast at 6pm, second file is 7pm, etc. 
 
+data = xr.open_dataset("blank_wrfinput")
+
+blank_netcdf =  data.get(['PM2_5_DRY'])#, 'RH', 'Q', 'QVAPOR']) 
+
+print(blank_netcdf)
+
+blank_netcdf.to_netcdf("blank_wrfinput.nc")
+
+source activate smoke_env
 
 
 I am going to try and document how best to run WPS to convert GRIB files from HRRR-Smoke model runs into input files for GSI. I created
@@ -46,45 +55,24 @@ Adam!)
 In order to run this, you need to create your own folder where you
 want your output to live (and your analysis.) 
 
-# Make your analysis folder somewhere where file size / memory 
-will not be an issue 
+# (2) Make your analysis folder somewhere where file size / memory will not be an issue 
 
-cd /my_scratch_directory/ 
-mdkir my_folder/ 
-cd my_folder/
+    cd /my_scratch_directory/ 
+
+    mdkir my_folder/ 
+
+    cd my_folder/
 
 Next, you're going to copy over all the files in this folder to your
 folder. 
 
-cp -r /global/home/users/siennaw/scratch/WPS/wps_files/* .
+    cp -r wps_files/* my_folder/
 
 
 This will make sure you have all the pieces you need. You will need 
 to edit your namelist.wps file!  I struggled a lot with getting the date right. 
 Seems like keeping the grib file linked to the date it belongs to is a tricky task indeed. Might require some good folder organization.  
 
-
-Original geogrid file (for CONUS):
-&geogrid
- parent_id         = 1,
- parent_grid_ratio = 1,
- i_parent_start    = 1,
- j_parent_start    = 1,
- e_we          = 1800,
- e_sn          = 1060,
- geog_data_res = 'modis_15s+modis_fpar+modis_lai+30s',
- dx = 3000,
- dy = 3000,
- map_proj =  'lambert',
- ref_lat   = 38.5,
- ref_lon   = -97.5,
- truelat1  = 38.5,
- truelat2  = 38.5,
- stand_lon = -97.5,
- geog_data_path = '/global/home/groups/co_aiolos/chow/geog_v3.6',
- ref_x = 900.0,
- ref_y = 530.0,
- /
 
 
 
@@ -98,9 +86,8 @@ Adam!)
 
 This code is about as automated as I could make it. 
 
-    * namelist.input template : 
-
-
+## (1) Run the script 1_set_up_bkg.py to generate the list of folders. 
+This python script will do most 
 
 This will make sure you have all the pieces you need. You will need 
 to edit your namelist.wps file!  I struggled a lot with getting the date right. 
@@ -108,23 +95,48 @@ Seems like keeping the grib file linked to the date it belongs to is a tricky ta
 
 
 Original geogrid file (for CONUS):
-&geogrid
- parent_id         = 1,
- parent_grid_ratio = 1,
- i_parent_start    = 1,
- j_parent_start    = 1,
- e_we          = 1800,
- e_sn          = 1060,
- geog_data_res = 'modis_15s+modis_fpar+modis_lai+30s',
- dx = 3000,
- dy = 3000,
- map_proj =  'lambert',
- ref_lat   = 38.5,
- ref_lon   = -97.5,
- truelat1  = 38.5,
- truelat2  = 38.5,
- stand_lon = -97.5,
- geog_data_path = '/global/home/groups/co_aiolos/chow/geog_v3.6',
- ref_x = 900.0,
- ref_y = 530.0,
- /
+    &geogrid
+    parent_id         = 1,
+    parent_grid_ratio = 1,
+    i_parent_start    = 1,
+    j_parent_start    = 1,
+    e_we          = 1800,
+    e_sn          = 1060,
+    geog_data_res = 'modis_15s+modis_fpar+modis_lai+30s',
+    dx = 3000,
+    dy = 3000,
+    map_proj =  'lambert',
+    ref_lat   = 38.5,
+    ref_lon   = -97.5,
+    truelat1  = 38.5,
+    truelat2  = 38.5,
+    stand_lon = -97.5,
+    geog_data_path = '/global/home/groups/co_aiolos/chow/geog_v3.6',
+    ref_x = 900.0,
+    ref_y = 530.0,
+    /
+
+
+OLD:
+    Original geogrid file (for CONUS):
+    &geogrid
+    parent_id         = 1,
+    parent_grid_ratio = 1,
+    i_parent_start    = 1,
+    j_parent_start    = 1,
+    e_we          = 1800,
+    e_sn          = 1060,
+    geog_data_res = 'modis_15s+modis_fpar+modis_lai+30s',
+    dx = 3000,
+    dy = 3000,
+    map_proj =  'lambert',
+    ref_lat   = 38.5,
+    ref_lon   = -97.5,
+    truelat1  = 38.5,
+    truelat2  = 38.5,
+    stand_lon = -97.5,
+    geog_data_path = '/global/home/groups/co_aiolos/chow/geog_v3.6',
+    ref_x = 900.0,
+    ref_y = 530.0,
+    /
+
