@@ -1,5 +1,7 @@
 Sienna White
+
  siennaw@berkeley.edu  
+ 
  Note: As of November 2024, we have removed the real.exe step from this process. 
 
 # Read Me 
@@ -10,10 +12,14 @@ This process (converting GRIB2 → netcdf) is one of the most tedious parts of s
 Here is what is happening at each stage of the process:
  
  [WPS Suite] (input file : namelist.wps)
- 1. Ungrib: This step unpacks the binary GRIB2 files and places them in an interim file format (unreadable to us humans). It unpacks the variables we define the in the ungrib Vtable. It will automatically assign the units we denote in the Vtable as well. (This will be important when we start worrying about what units things are in – NOAA changed its standard units for smoke in 2021.) Ungrib is fairly slow! It runs in serial and tends to take about 10 minutes per hour time step, as far as I can tell.
- 2. Geogrid: This step creates a grid for our data, using geographic parameters defined in the namelist.wps file. This is where we are cropping data to just California reigon. This step is very fast.
- 3. Metgrid: This step takes the ungribbed files, and interpolates them onto the grid we created w/ geogrid. The output of metgrid are a bunch of netcdf files that start with “met_em” (one for each hour). This step is relatively fast.
- 4. [Last step: NOT WPS] Python post-processing: this step is pretty silly. Historically, we would run a fourth executable (real.exe) that took the metgrid file and created a "wrfinput" file. However, now that NOAA is providing very sparse datasets (Eg, just smoke-- no temperature, wind, etc), real.exe won't run (that program is designed to create an initial condition for WRF the weather model!). So, we do a bit of a silly hack, where we take a template wrfinput file and just drag-and-drop in our data from metgrid and update the date. We do this with a python script. 
+   1. Ungrib: This step unpacks the binary GRIB2 files and places them in an interim file format (unreadable to us humans). It unpacks the variables we define the in the ungrib Vtable. It will automatically assign the units we denote in the Vtable as well. (This will be important when we start worrying about what units things are in – NOAA changed its standard units for smoke in 2021.) Ungrib is fairly slow! It runs in serial and tends to take about 10 minutes per hour time step, as far as I can tell.
+      
+   2. Geogrid: This step creates a grid for our data, using geographic parameters defined in the namelist.wps file. This is where we are cropping data to just California reigon. This step is very fast.
+  
+   3. Metgrid: This step takes the ungribbed files, and interpolates them onto the grid we created w/ geogrid. The output of metgrid are a bunch of netcdf files that start with “met_em” (one for each hour). This step is relatively fast.
+
+[Last step: NOT WPS]   
+  4.  Python post-processing: this step is pretty silly. Historically, we would run a fourth executable (real.exe) that took the metgrid file and created a "wrfinput" file. However, now that NOAA is providing very sparse datasets (Eg, just smoke-- no temperature, wind, etc), real.exe won't run (that program is designed to create an initial condition for WRF the weather model!). So, we do a bit of a silly hack, where we take a template wrfinput file and just drag-and-drop in our data from metgrid and update the date. We do this with a python script. 
 
 For more info on WPS, I recommend :  [https://ral.ucar.edu/sites/default/files/public/Lesson-wps.html] 
 
