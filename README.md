@@ -5,9 +5,9 @@ Sienna White
  Note: As of November 2024, we have removed the real.exe step from this process. 
 
 # Read Me 
-Unfortunately, past HRRR-Smoke runs are archived as a GRIB2 files. GRIB2 is essentially a fancy compressed binary file format for weather model outputs. Unfortunately, GSI cannot read these GRIB2 files (in fact, almost nothing can read GRIB2 files), so in order to run GSI, we will have to convert the GRIB2 files into netcdf. Netcdf is by far the more common and friendly data type for multi-dimensional weather data.
+Past HRRR-Smoke runs are archived as a GRIB2 files. GRIB2 is essentially a fancy compressed binary file format for weather model outputs. Unfortunately, GSI cannot read these GRIB2 files (in fact, almost nothing can read GRIB2 files), so in order to run GSI, we will have to convert the GRIB2 files into NETCDF. NETCDF is a common and friendly data type for multi-dimensional environmental data.
 
-This process (converting GRIB2 → netcdf) is one of the most tedious parts of setting up a GSI run. I created this repository to hopefully explain what it’s doing in a fairly accessible manner. The conversion itself is a four-step process so it will be intimidating at first. 
+This process (converting GRIB2 → NETCDF) is one of the most tedious parts of setting up a GSI run. I created this repository to hopefully explain what's happening in a fairly accessible manner. 
 
 Here is what is happening at each stage of the process:
  
@@ -19,6 +19,7 @@ Here is what is happening at each stage of the process:
    3. Metgrid: This step takes the ungribbed files, and interpolates them onto the grid we created w/ geogrid. The output of metgrid are a bunch of netcdf files that start with “met_em” (one for each hour). This step is relatively fast.
 
 [Last step: NOT WPS]   
+
   4.  Python post-processing: this step is pretty silly. Historically, we would run a fourth executable (real.exe) that took the metgrid file and created a "wrfinput" file. However, now that NOAA is providing very sparse datasets (Eg, just smoke-- no temperature, wind, etc), real.exe won't run (that program is designed to create an initial condition for WRF the weather model!). So, we do a bit of a silly hack, where we take a template wrfinput file and just drag-and-drop in our data from metgrid and update the date. We do this with a python script. 
 
 For more info on WPS, I recommend :  [https://ral.ucar.edu/sites/default/files/public/Lesson-wps.html] 
