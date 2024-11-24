@@ -77,6 +77,8 @@ This is the main script that will do 99% of the work for you! So please don't ed
 ```
  Note that the working directory should be the path to the folder you just created. The finished files directory doesn't matter-- right now that's not used at all. And the grib_directory will be a path we'll provide-- it's whatever folder Becca/Tina or myself have downloaded HRRR files into. 
 
+    $ python 1_set_up_bkg.py
+
 This script has two options (GENERATE_LIST_OF_FOLDERS=True or GENERATE_LIST_OF_FOLDERS=False). You will want to run this script twice. The first time, change GENERATE_LIST_OF_FOLDERS=True. This changes the purpose of the script: instead of doing a billion things to set up the conversion, it just goes into the grib_directory and writes you a nice textfile with a list of every folder in that directory. After it does this, it will ask if you want to continue. Enter "n" to say no. It's good practice to glance over the list you just generated, and make sure everything looks reasonable. 
 
 Once you've done that, change GENERATE_LIST_OF_FOLDERS=False and run the script again. This will take a lot longer. Now, the script is generating subdirectories in your working folder and setting up all the "ingredients" for a conversion run in each folder. 
