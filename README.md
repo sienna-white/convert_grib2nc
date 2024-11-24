@@ -26,12 +26,14 @@ Thus we need to run 3 (!) executables and create a unique input file (namelist.w
 
 In order to start the conversion, you need a folder somewhere on scratch that contains all your grib files. This will probably be in Becca's directory. All the grib files should be in their own subdirectory. Ideally it will look something like this:
 
+```
  grib_folder/
    2018110800/
       gribfile.grib2
       anothergrib.grib2
    2018110800/ 
    ... etc 
+```
 
 From what I can tell, when you download grib files from the internet, they come tarballed as these directories. So hopefully getting this directory structure isn't too much of a hassle. Each folder name contains very important info about the date of the grib files. The format is [YEAR][MONTH][DAY][HOUR]. Inside, the grib files represent forecasts starting \textit{from that start time.}. So if the name of the folder ends in 18 (6pm) than the first file is the forecast at 6pm, second file is 7pm, etc. 
 
@@ -70,9 +72,9 @@ This script has two options (GENERATE_LIST_OF_FOLDERS=True or GENERATE_LIST_OF_F
 Once you've done that, change GENERATE_LIST_OF_FOLDERS=False and run the script again. This will take a lot longer. Now, the script is generating subdirectories in your working folder and setting up all the "ingredients" for a conversion run in each folder. 
 
 Once this is done, the script will print out that you can run a shell script to submit all the jobs it just created. You can do that in the command line,
-
+```
   $ ./jobs2run 
-
+```
  and now all your conversion jobs will be submitted to sbatch! 
  
 
