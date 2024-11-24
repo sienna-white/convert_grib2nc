@@ -9,7 +9,7 @@
 #
 #SBATCH --nodes=1
 # Wall clock limit (let's set to 10 mintes, 0 seconds)
-#SBATCH --time=01:00:00
+#SBATCH --time=00:08:00
 #SBATCH -o REPLACE_WORKING_DIRECTORY/slurm-stdout # STDOUT
 
 ## Commands to run
@@ -19,13 +19,29 @@ echo "Cleaning up directory..."
 rm *.log
 rm GRIBFILE*
 
+echo "Starting on spack.."
+path2spack=/global/scratch/users/siennaw/gsi_2024/compiling/spack
+
+# This sources the environment variables spack needs from the local spack folder
+. ${path2spack}/share/spack/setup-env.sh
+
 # Load in modules 
-module purge 
-module load intel/2016.4.072
-module load openmpi/3.0.1-intel
-module load cmake/3.22.0 
-module unload openmpi/2.0.2-intel
-module list 
+spack load bufr
+spack load ip
+spack load sp
+spack load bacio
+spack load w3emc
+spack load sigio
+spack load sfcio
+spack load nemsio
+spack load ncio
+spack load wrf-io
+spack load crtm
+spack load blas                 #not sure if these are needed too
+spack load netcdf-fortran       #not sure if these are needed too
+spack load netcdf-c             #not sure if these are needed too
+spack load jasper
+spack load hdf5
 
 ######### UNGRIB ############
 # Set up + run ungrib
@@ -47,25 +63,14 @@ echo -e "\tRunning metgrid ..."
 ./metgrid.exe >> metgrid.out
 
 ######### REAL ############
-echo -e "\tRunning real ..."
-echo "Starting loop." > real.out
+echo -e "\tStarting python loop ..."
+echo "Starting loop." 
 
 hour0=REPLACE_START_HOUR
 hourF=23
 DATE=REPLACE_DATE
 
-
-
 for hour in $(seq $hour0 $hourF); do
-
-
-  
-  sed -r -i.bak s/"start_hour[[:space:]]*=[[:space:]]*[[:digit:]]*,"/"start_hour= ${hour},"/g namelist.input
-  end_hour=$((${hour} + 1))
-  sed -r -i.bak s/"end_hour[[:space:]]*=[[:space:]]*[[:digit:]]*,"/"end_hour= ${hour},"/g namelist.input
-
-  echo "Running real..."    >> real.out
-  ./real2018.exe   >> real.out
 
   # Add leading zero to number if needed (aka, need midnight as 00, not 0; 1 am as 01; etc)
   hour=$(printf %02d $hour)
@@ -73,63 +78,16 @@ for hour in $(seq $hour0 $hourF); do
   datenum="${DATE//-/}${hour}"
   echo $hour 
 
-  echo "Writing namelist.input for T0=$hour" >> real.out
   date="${DATE}_${hour}:00:00"
-
-  # Rename the output WRF input file to have the date appended.
-  mv wrfinput_d01 wrfinput_d01_$date
 
   met_fn=met_em.d01.${date}.nc
   wrf_fn=wrfinput_d01
   wrf_fn_out=wrfinput_d01_${datenum}.nc
 
-  ## COPY OVER SMOKE TO THE OUTPUT! ## 
-cat << EOF > ./add_massden_as_PM25.py
-import xarray as xr
-
-# Metgrid 
-path = '${met_fn}'
-data = xr.open_dataset(path)
-
-# WRFINPUT 
-path = 'wrfinput_d01_${date}'
-data_out = xr.open_dataset(path)
-
-# Now we try some substitution trickery
-smoke_var_name = 'PM2_5_DRY'
-data_out[smoke_var_name] = data_out.T.copy(deep=True)
-
-# Correct the units + description
-data_out[smoke_var_name].attrs['units'] = 'ug/m3' # UNITS = ug/m3! 
-data_out[smoke_var_name].attrs['description'] = data['MASSDEN'].attrs['description']
-
-vertical_layers = data_out.bottom_top
-
-for i in vertical_layers:
-  data_out[smoke_var_name][dict(bottom_top=i)] = data['MASSDEN'][dict(num_metgrid_levels=i)] 
-  # We need to index array of data rather than use isel / sel. found this out the hard way.
-
-data_out.to_netcdf('${wrf_fn_out}')
-EOF
-
-  echo "running python" >> real.out
-  conda run -n geo_env python ./add_massden_as_PM25.py  >> real.out
-  
-  output_directory=REPLACE_OUTPUT_DIRECTORY
-  # Check if python script ran successfully 
-  if [ -e "$wrf_fn_out" ]; then
-      # File exists, so move it to the destination directory
-      mv $wrf_fn_out $output_directory
-      rm $wrfinput_d01_${date}
-      echo "Moved WRF file w/ smoke to output directory!" >> real.out
-  else
-      # File does not exist
-      echo "Error: ${wrf_fn_out} not created. Check out the error logs?" >> real.out
-  fi
-  
+  ~/.conda/envs/smoke_env/bin/python -u metgrid2wrf.py $met_fn $wrf_fn_out & 
 done
-
-echo "Done with REAL"
+wait 
+echo "Done with python step!"
 
 ######### CLEAN UP! ############
 
@@ -138,9 +96,10 @@ stdout=REPLACE_JOB_NAME.out
 cat ungrib.out   >  $stdout
 cat geogrid.out  >> $stdout
 cat metgrid.out  >> $stdout
-cat real.out     >> $stdout 
 
 echo "Done processing grib file, wrfinput[s] created." 
 
-#rm *.p000
-#rm GRIBFILE.*
+rm *.p000
+rm GRIBFILE.*
+rm FILE:*
+rm blank_*

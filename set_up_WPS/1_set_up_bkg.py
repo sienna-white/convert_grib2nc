@@ -42,13 +42,16 @@ jobs to slurm. You can copy and paste that into terminal to launch the jobs!
 '''
 
 ######### USER INPUT #############
-GENERATE_LIST_OF_FOLDERS = False # True or False
+GENERATE_LIST_OF_FOLDERS = True # True or False
 
 # Where we will process our files (Change to a folder on your scratch)
-working_directory = '/global/scratch/users/siennaw/tmp/data/bkg/grib2wrf/'
+working_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/working/'
 
 # Where the finished files should be saved
-output_directory = '/global/scratch/users/siennaw/tmp/DEMO/'
+output_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/finished/'
+
+# Where the grib files live 
+grib_directory = '/global/scratch/users/rasugrue/convert/smallgrib_NOAA_Nov2024/'
 ####################################
 
 import os 
@@ -59,11 +62,7 @@ import pandas as pd
 import set_up_bkg_lib as bkg 
 import stat
 
-
 #################### Do not change these. ############################## 
-# Where the grib files live 
-grib_directory = '/global/scratch/users/siennaw/data/grib/'
-
 # WPS files 
 wps_fn = '../wps_files/'
 

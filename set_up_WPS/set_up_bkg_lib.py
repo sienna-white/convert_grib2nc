@@ -112,7 +112,7 @@ class WPSRun:
 
     def copy_executables(self):
         destination_folder = self.working_folder
-        source_folder = '/global/scratch/users/siennaw/data/executables/'
+        source_folder = '/global/scratch/users/siennaw/gsi_2024/compiling/wrf_executables'
 
         # Get a list of all files and subdirectories in the source folder
         items = os.listdir(source_folder)

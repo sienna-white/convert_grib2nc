@@ -6,20 +6,20 @@ if os.getcwd() not in sys.path: # Add the current directory to the Python path
 import pandas as pd 
 import set_up_wps_util as util 
 import shutil
+import set_up_bkg_lib as bkg 
 
 # Where the finished netcdf files will live 
-netcdf_directory = '/global/home/users/siennaw/scratch/data/wrf/'
+netcdf_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/finished/'
 
 # Where the processed grib / netcdf files live 
-grib2wrf_directory = '/global/home/users/siennaw/scratch/data/grib2wrf/'
+grib2wrf_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/working/'
 
 # Get list of folders in our "grib2wrf" directory. 
-grib2wrf_folders = util.get_folders_in_directory(grib2wrf_directory)
+grib2wrf_folders = bkg.get_folders_in_directory(grib2wrf_directory)
 
 print('Found %d files in /grib2wrf/ ...' % len(grib2wrf_folders))
 
 # Loop through each folder see if there are completed runs ... 
-
 
 with open('PROCESSED_GRIB_FILES.txt', 'w') as f:
 
@@ -44,7 +44,7 @@ with open('PROCESSED_GRIB_FILES.txt', 'w') as f:
 
             for file in os.listdir(grib2wrf_file_path):
 
-                if file.endswith(".nc"):
+                if (file.endswith(".nc")) & ("blank" not in file):
                     copy_path = os.path.join(grib2wrf_file_path, file)
                     print(copy_path)
                     final_path = os.path.join(netcdf_folder, file)
