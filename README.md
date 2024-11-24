@@ -1,28 +1,31 @@
 Sienna White
-siennaw@berkeley.edu 
-July 27 2023
+ siennaw@berkeley.edu  
+ Note: As of November 2024, we have removed the real.exe step from this process. 
 
 # Read Me 
+Unfortunately, past HRRR-Smoke runs are archived as a GRIB2 files. GRIB2 is essentially a fancy compressed binary file format for weather model outputs. Unfortunately, GSI cannot read these GRIB2 files (in fact, almost nothing can read GRIB2 files), so in order to run GSI, we will have to convert the GRIB2 files into netcdf. Netcdf is by far the more common and friendly data type for multi-dimensional weather data.
 
-A huge part of GSI involves taking binary files (GRIB) and converting them to wrfinput files, which are netcdf files. This repository is designed to facilitate that process.
+This process (converting GRIB2 → netcdf) is one of the most tedious parts of setting up a GSI run. I created this repository to hopefully explain what it’s doing in a fairly accessible manner. The conversion itself is a four-step process so it will be intimidating at first. 
 
-There are four main steps that are involved in creating wrfinput files listed below. Three of them are housed under the "WPS" software, while the last exectuable "real.exe" is part of the WRF suite. 
+Here is what is happening at each stage of the process:
+ 
+ [WPS Suite] (input file : namelist.wps)
+ 1. Ungrib: This step unpacks the binary GRIB2 files and places them in an interim file format (unreadable to us humans). It unpacks the variables we define the in the ungrib Vtable. It will automatically assign the units we denote in the Vtable as well. (This will be important when we start worrying about what units things are in – NOAA changed its standard units for smoke in 2021.) Ungrib is fairly slow! It runs in serial and tends to take about 10 minutes per hour time step, as far as I can tell.
+ 2. Geogrid: This step creates a grid for our data, using geographic parameters defined in the namelist.wps file. This is where we are cropping data to just California reigon. This step is very fast.
+ 3. Metgrid: This step takes the ungribbed files, and interpolates them onto the grid we created w/ geogrid. The output of metgrid are a bunch of netcdf files that start with “met_em” (one for each hour). This step is relatively fast.
+ 4. [Last step: NOT WPS] Python post-processing: this step is pretty silly. Historically, we would run a fourth executable (real.exe) that took the metgrid file and created a "wrfinput" file. However, now that NOAA is providing very sparse datasets (Eg, just smoke-- no temperature, wind, etc), real.exe won't run (that program is designed to create an initial condition for WRF the weather model!). So, we do a bit of a silly hack, where we take a template wrfinput file and just drag-and-drop in our data from metgrid and update the date. We do this with a python script. 
 
 For more info on WPS, I recommend :  [https://ral.ucar.edu/sites/default/files/public/Lesson-wps.html] 
 
-Note: As of November 2024, we have removed the real.exe step from this process. 
- 
- [WPS Suite] (input file : namelist.wps)
- 
-     (1) ungrib  --> takes grib files and "unpacks" them to an interim file format. Ungrib will call a Variance Table. 
-     
-     (2) geogrid --> creates geogrid netcdf object with the specified spatial dimensions you'd like for your domain
-     
-     (3) metgrid --> interpolates ungribbed-object onto the geogrid to create a met_em netcdf file 
-          
-Thus we need to run 3 (!) executables and create a unique input file (namelist.wps) for each file. Since this is so time-consuming, this process was created to try and automate as much as possible. I'll list the steps below.
+## Using this repository
+From your (user) end, you’ll need to do the following in order to convert HRRR-Smoke output from GRIB2 → netcdf:
 
-# Step 1 : Downloading grib files + directory structure 
+ 1. Download or locate your GRIB files 
+ 2. Create a folder where you want the files to be processed
+ 3. Use the “1_set_up_bkg.py” script to pre-process the GRIB files and set up WPS for your GRIB files.
+ 4. Submit all the WPS/REAL jobs to slurm using provided script (will output at the end of step 3).
+ 
+## Step 1 : Downloading grib files + directory structure 
 
 In order to start the conversion, you need a folder somewhere on scratch that contains all your grib files. This will probably be in Becca's directory. All the grib files should be in their own subdirectory. Ideally it will look something like this:
 
@@ -37,7 +40,7 @@ In order to start the conversion, you need a folder somewhere on scratch that co
 
 From what I can tell, when you download grib files from the internet, they come tarballed as these directories. So hopefully getting this directory structure isn't too much of a hassle. Each folder name contains very important info about the date of the grib files. The format is [YEAR][MONTH][DAY][HOUR]. Inside, the grib files represent forecasts starting \textit{from that start time.}. So if the name of the folder ends in 18 (6pm) than the first file is the forecast at 6pm, second file is 7pm, etc. 
 
-# Step 2: Make a "working folder" to process files in. 
+## Step 2: Make a "working folder" to process files in. 
 This can be as simple as just some directory within your scratch directory. Just make a folder and copy its path. I will refer to this as your "working directory." 
 
     cd /my_scratch_directory/ 
@@ -45,10 +48,10 @@ This can be as simple as just some directory within your scratch directory. Just
     mkdir working/ 
 
 
-# Step 3: Getting your executables
+## Step 3: Getting your executables
 If you want to compile the executables yourself, awesome. It will be a bit of a challenge. For now, the step is set up to copy the exectuables out of my scratch directory. 
 
-# Step 4: Running 1_set_up_bkg.py
+## Step 4: Running 1_set_up_bkg.py
 This is the main script that will do 99% of the work for you! So please don't edit anything without asking me. You need to edit the first couple lines of the script. It will look like this:
 
  ```
@@ -77,9 +80,6 @@ Once this is done, the script will print out that you can run a shell script to 
 ```
  and now all your conversion jobs will be submitted to sbatch! 
  
-
-
-
 ** Ignore ** 
 Original geogrid file (for CONUS):
     &geogrid
