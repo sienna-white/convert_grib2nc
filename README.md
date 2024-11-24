@@ -26,13 +26,13 @@ Thus we need to run 3 (!) executables and create a unique input file (namelist.w
 
 In order to start the conversion, you need a folder somewhere on scratch that contains all your grib files. This will probably be in Becca's directory. All the grib files should be in their own subdirectory. Ideally it will look something like this:
 
-   grib_folder/
-      2018110800/
-         gribfile.grib2
-         anothergrib.grib2
-      2018110800/ 
-      ... etc 
-  
+ grib_folder/
+   2018110800/
+      gribfile.grib2
+      anothergrib.grib2
+   2018110800/ 
+   ... etc 
+
 From what I can tell, when you download grib files from the internet, they come tarballed as these directories. So hopefully getting this directory structure isn't too much of a hassle. Each folder name contains very important info about the date of the grib files. The format is [YEAR][MONTH][DAY][HOUR]. Inside, the grib files represent forecasts starting \textit{from that start time.}. So if the name of the folder ends in 18 (6pm) than the first file is the forecast at 6pm, second file is 7pm, etc. 
 
 # Step 2: Make a "working folder" to process files in. 
@@ -48,7 +48,8 @@ If you want to compile the executables yourself, awesome. It will be a bit of a 
 
 # Step 4: Running 1_set_up_bkg.py
 This is the main script that will do 99% of the work for you! So please don't edit anything without asking me. You need to edit the first couple lines of the script. It will look like this:
- 
+
+ ```
   ######### USER INPUT #############
   GENERATE_LIST_OF_FOLDERS = True # True or False
   
@@ -61,7 +62,7 @@ This is the main script that will do 99% of the work for you! So please don't ed
   # Where the grib files live 
   grib_directory = '/global/scratch/users/rasugrue/convert/smallgrib_NOAA_Nov2024/'
   ####################################
-
+```
  Note that the working directory should be the path to the folder you just created. The finished files directory doesn't matter-- right now that's not used at all. And the grib_directory will be a path we'll provide-- it's whatever folder Becca/Tina or myself have downloaded HRRR files into. 
 
 This script has two options (GENERATE_LIST_OF_FOLDERS=True or GENERATE_LIST_OF_FOLDERS=False). You will want to run this script twice. The first time, change GENERATE_LIST_OF_FOLDERS=True. This changes the purpose of the script: instead of doing a billion things to set up the conversion, it just goes into the grib_directory and writes you a nice textfile with a list of every folder in that directory. After it does this, it will ask if you want to continue. Enter "n" to say no. It's good practice to glance over the list you just generated, and make sure everything looks reasonable. 
