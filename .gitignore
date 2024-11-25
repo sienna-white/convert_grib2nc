@@ -1,5 +1,6 @@
 # Object file
 *.o
+jobs2run.sh
 
 # Ada Library Information
 *.exe
