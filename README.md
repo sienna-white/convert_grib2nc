@@ -88,7 +88,18 @@ Once this is done, the script will print out that you can run a shell script to 
   $ ./jobs2run 
 ```
  and now all your conversion jobs will be submitted to sbatch! 
- 
+
+
+## Step 5: Move the finished files into a directory
+Use the shell script 
+
+    $ ./2_move_processed_files.sh 
+recall you might have to make it executable first with
+   
+    $ chmod +x 2_move_processed_files.sh 
+if you can't run it right away. Edit the paths in this to match above.
+
+
 ** Ignore ** 
 Original geogrid file (for CONUS):
     &geogrid
