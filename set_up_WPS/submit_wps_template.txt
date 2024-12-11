@@ -9,7 +9,7 @@
 #
 #SBATCH --nodes=1
 # Wall clock limit (let's set to 10 mintes, 0 seconds)
-#SBATCH --time=00:08:00
+#SBATCH --time=00:04:00
 #SBATCH -o REPLACE_WORKING_DIRECTORY/slurm-stdout # STDOUT
 
 ## Commands to run

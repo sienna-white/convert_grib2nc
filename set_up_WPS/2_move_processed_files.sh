@@ -14,6 +14,7 @@ for folder in "$SOURCE_DIR"/*; do
     if [ -d "$folder" ]; then
         # Find and move files starting with 'wrfinput_' to the destination directory
         # thank you chatgpt for this line of code
+        echo $folder
         find "$folder" -maxdepth 1 -type f -name "wrfinput_*" -exec mv {} "$DEST_DIR" \;
     fi
 done 

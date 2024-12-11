@@ -42,7 +42,7 @@ jobs to slurm. You can copy and paste that into terminal to launch the jobs!
 '''
 
 ######### USER INPUT #############
-GENERATE_LIST_OF_FOLDERS = True # True or False
+GENERATE_LIST_OF_FOLDERS = False # True or False
 
 # Where we will process our files (Change to a folder on your scratch)
 working_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/working/'
@@ -51,7 +51,7 @@ working_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/working/'
 output_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/finished/'
 
 # Where the grib files live 
-grib_directory = '/global/scratch/users/rasugrue/convert/smallgrib_NOAA_Nov2024/'
+grib_directory = '/global/scratch/users/rasugrue/convert/smallgrib_NOAA_Nov2024/from_MSU'
 ####################################
 
 import os 
@@ -68,6 +68,7 @@ wps_fn = '../wps_files/'
 
 # List of folders to process 
 fout='folders2process.txt'
+fout = 'folders2020.txt'
 
 # Shell script to launch written jobs 
 fshell = 'jobs2run.sh'
@@ -105,9 +106,9 @@ with open(fout, 'r') as f:
 grib_folders = list(filter(None, grib_folders))
 
 # Loop through each grib folder and prep a WPS run namelist
-for folder in grib_folders:
+for f,folder in enumerate(grib_folders[400:800]):
 
-    print('\n Processing %s' % folder)
+    print('\n Processing %s [%d/%d]' % (folder, f, len(grib_folders)))
     
     run = bkg.WPSRun(folder)
 
