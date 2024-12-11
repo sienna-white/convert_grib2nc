@@ -1,14 +1,21 @@
 import xarray as xr
 import sys
+import os 
 
 # Get arguments passed to the script
 metgrid_file_name = sys.argv[1]
 output_file_name = sys.argv[2]
 
-# Open the blank wrfinput file 
-blank_wrf = xr.open_dataset("blank_wrfinput.nc")
-
 # Open the metgrid file 
+# Check in metgrid file exists
+if not os.path.exists(metgrid_file_name):
+  print('Metgrid file does not exist.')
+  sys.exit(1)
+
+# Open the blank wrfinput file 
+template = xr.open_dataset("blank_wrfinput.nc")
+blank_wrf = template.copy()
+
 data = xr.open_dataset(metgrid_file_name)
 
 # Update the time stamps 
