@@ -68,7 +68,7 @@ wps_fn = '../wps_files/'
 
 # List of folders to process 
 fout='folders2process.txt'
-fout = 'folders2020.txt'
+# fout = 'folders2020.txt'
 
 # Shell script to launch written jobs 
 fshell = 'jobs2run.sh'
@@ -106,7 +106,7 @@ with open(fout, 'r') as f:
 grib_folders = list(filter(None, grib_folders))
 
 # Loop through each grib folder and prep a WPS run namelist
-for f,folder in enumerate(grib_folders[400:800]):
+for f,folder in enumerate(grib_folders):
 
     print('\n Processing %s [%d/%d]' % (folder, f, len(grib_folders)))
     

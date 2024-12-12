@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Where the processed grib / netcdf files live 
-SOURCE_DIR='/global/scratch/users/siennaw/gsi_2024/grib2nc/working/'
+SOURCE_DIR='/global/scratch/users/siennaw/gsi_2024/grib2nc/working8/'
 
 # Where we want to move all the finished files 
 DEST_DIR='/global/scratch/users/siennaw/gsi_2024/grib2nc/finished/'

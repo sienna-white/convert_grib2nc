@@ -3,7 +3,6 @@ import os
 # Create an hourly timeseries for a year
 
 year = 2020
-times_hourly = pd.date_range(start='%d-01-01' % year, end='%d-12-31' % year, freq='H')
 times_daily = pd.date_range(start='%d-01-01' % year, end='%d-12-31' % year, freq='D')
 
 # Convert to just the date
@@ -18,9 +17,12 @@ for hour in range(0, 24):
 
 directory = "/global/scratch/users/siennaw/gsi_2024/grib2nc/finished/"
 
+full_days = 0
+
+missing = [] 
 for day in times_daily:
 
-    print("Checking for files on day %s" % day)
+    count = 0 
 
     for hour in range(0, 24):
         datestring = "%s%02d" % (day.strftime('%Y%m%d'), hour)
@@ -29,12 +31,21 @@ for day in times_daily:
         file_name = directory + 'wrfinput_d01_%s.nc' % datestring
 
         if os.path.exists(file_name):
-            print("\tFile exists: %s" % file_name)
+            # print("\tFile exists: %s" % file_name)
+            count += 1 
             output.loc[day, '%02d' % hour] = 1
-        # else:
-        #     output.loc[day, 'exists'] = False
+        else:
+            missing.append(datestring) #  output.loc[day, 'exists'] = False
+    
+    print("Checked for files on day %s [%d/24]" % (day, count))
+    if count == 24:
+        full_days += 1
 
+print("Number of full days: %d" % full_days)
 output.to_csv('inventory_%d.csv' % year)
+
+
+print(missing)
 # if not os.path.exists(metgrid_file_name):
 #   print('Metgrid file does not exist.')
 #   sys.exit(1)
