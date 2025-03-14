@@ -34,7 +34,7 @@ better batch-scale processing.
 
 Now that  "folders2process.txt" is ready to go, set 
 
-    GENERATE_LIST_OF_FOLDERS = False
+    GENERATE_LIST_OF_FOLDERS = True
 
 and run again! This should actually write all the input files / etc and set up the folders 
 in your working directory. The script will then print out a shell command to submit all your 
@@ -45,13 +45,14 @@ jobs to slurm. You can copy and paste that into terminal to launch the jobs!
 GENERATE_LIST_OF_FOLDERS = False # True or False
 
 # Where we will process our files (Change to a folder on your scratch)
-working_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/working/'
+working_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/2019/gaps3'
 
 # Where the finished files should be saved
-output_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/finished/'
+output_directory = '/global/scratch/users/siennaw/gsi_2024/grib2nc/2019/finished'
 
 # Where the grib files live 
-grib_directory = '/global/scratch/users/rasugrue/convert/smallgrib_NOAA_Nov2024/from_MSU'
+grib_directory = "/global/scratch/users/rasugrue/convert/grib_Feb2025_missing2019/round3"
+# grib_directory ='/global/scratch/users/rasugrue/convert/smallgrib_NOAA_Nov2024/from_MSU'
 ####################################
 
 import os 
@@ -67,11 +68,12 @@ import stat
 wps_fn = '../wps_files/'
 
 # List of folders to process 
-fout='folders2process.txt'
+fout=   'folders2process.txt' # sys.argv[1]  #sys.argv[1] #'folders2process.txt' #sys.argv[1] #
 # fout = 'folders2020.txt'
 
 # Shell script to launch written jobs 
-fshell = 'jobs2run.sh'
+fshell =  "jobs2run.sh" #sys.argv[2] #'jobs2run.sh' #sys.argv[2] #
+print("Shell script to launch jobs: ", fshell)
 
 # Delete shell script if it already exists 
 if os.path.exists(fshell):
@@ -86,9 +88,11 @@ if GENERATE_LIST_OF_FOLDERS:
     print('Found the following folders to convert ...')
     with open(fout, 'w') as f:
         for folder in grib_folders:
-            f.write(folder + '\n')
-            print(folder)
+                f.write(folder + '\n')
+                print(folder)
 
+    # Get argument passed to script 
+    # fout = sys.argv[1]
     user = input("List of folders has been written. Continue running (enter: y) or stop the script (enter: n)?")
     if user == 'n':
         exit()

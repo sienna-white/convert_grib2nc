@@ -70,22 +70,17 @@ hour0=REPLACE_START_HOUR
 hourF=23
 DATE=REPLACE_DATE
 
-for hour in $(seq $hour0 $hourF); do
+# Loop over all files starting with "met_em" in the current directory
+for file in met_em*; do
 
-  # Add leading zero to number if needed (aka, need midnight as 00, not 0; 1 am as 01; etc)
-  hour=$(printf %02d $hour)
-  #datenum="${DATE}${hour}"
-  datenum="${DATE//-/}${hour}"
-  echo $hour 
+    # Check if any matching files exist
+    [ -e "$file" ] || continue
 
-  date="${DATE}_${hour}:00:00"
+    echo "Processing $file"
+    ~/.conda/envs/smoke_env/bin/python -u metgrid2wrf.py $file  & 
 
-  met_fn=met_em.d01.${date}.nc
-  wrf_fn=wrfinput_d01
-  wrf_fn_out=wrfinput_d01_${datenum}.nc
-
-  ~/.conda/envs/smoke_env/bin/python -u metgrid2wrf.py $met_fn $wrf_fn_out & 
 done
+
 wait 
 echo "Done with python step!"
 

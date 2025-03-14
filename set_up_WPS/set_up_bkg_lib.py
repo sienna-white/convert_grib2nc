@@ -51,7 +51,7 @@ class WPSRun:
             date = pd.to_datetime(folder, format='%Y%m%d%H')
             self.date        = date
             self.start_time  = date
-            self.end_time    = date.replace(hour=23, minute=0, second=0)
+            self.end_time    = date + pd.Timedelta(hours=24)  # SW change on 2/14/2025 -- want to convert 24 hours 
             self.end_time_str = self.end_time.strftime('%Y-%m-%d_%H:00:00')
             self.start_time_str = self.start_time.strftime('%Y-%m-%d_%H:00:00')
             self.date_standard = folder
