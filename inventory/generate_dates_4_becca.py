@@ -72,7 +72,7 @@ print(combined)
 # print(copy_date)
 # # Write to text file 
 
-with open('dates_2_copy_MSU_March2.txt', 'w') as f:
+with open('dates_2_copy_2019.txt', 'w') as f:
     for date in combined:
         f.write(date + '\n')
     

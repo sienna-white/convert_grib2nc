@@ -164,7 +164,7 @@ class WPSRun:
         ''' 
         working_directory = self.working_folder 
 
-        with open('submit_wps_template.txt') as f:
+        with open('submit_wps_template_2.txt') as f:
             job_name = 'WPS_%s' % self.folder
             self.job_name  = job_name 
             submit_wps_job = f.read()

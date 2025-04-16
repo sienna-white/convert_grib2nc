@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Where the processed grib / netcdf files live 
-SOURCE_DIR='/global/scratch/users/siennaw/gsi_2024/grib2nc/2019/gaps3/'
+SOURCE_DIR='/global/scratch/users/siennaw/gsi_2024/grib2nc/2017/working/'
 
 # Where we want to move all the finished files 
-DEST_DIR="/global/scratch/users/siennaw/gsi_2024/grib2nc/2019/finished/" #'/global/scratch/users/siennaw/gsi_2024/grib2nc/finished/'
+DEST_DIR="/global/scratch/users/siennaw/gsi_2024/grib2nc/2017/finished/" #'/global/scratch/users/siennaw/gsi_2024/grib2nc/finished/'
 
 # Ensure the destination directory exists
 #mkdir -p "$DEST_DIR"

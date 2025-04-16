@@ -2,11 +2,14 @@ import os
 import re
 import shutil
 
+
+year = 2020
+
 # where all the original forecast files are
-source_dir = "/global/scratch/users/siennaw/gsi_2024/grib2nc/2019/finished"
+source_dir = "/global/scratch/users/siennaw/gsi_2024/grib2nc/%d/finished" % year
 
 # where only the best forecast files are moving to 
-destination_dir = "/global/scratch/users/siennaw/gsi_2024/grib2nc/2019/best_forecast"
+destination_dir = "/global/scratch/users/siennaw/gsi_2024/grib2nc/%d/best_forecast" % year
 
 # this dictionary will map each date to a tuple: (lowest_number_found, filename)
 lowest_files = {}
@@ -35,7 +38,7 @@ for filename in os.listdir(source_dir):
 
 # write dictionary to a text file 
 lowest_files = dict(sorted(lowest_files.items()))
-with open("best_forecast_files.txt", "w") as f:
+with open("best_forecast_files_%d.txt" % year, "w") as f:
     for date_str, (num, filename) in lowest_files.items():
         f.write(f"{date_str} {num} {filename}\n")
         print(f"Date: {date_str}, FH: {num}, Filename: {filename}")

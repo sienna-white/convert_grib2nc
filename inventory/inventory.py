@@ -4,8 +4,8 @@ import glob
 
 # Create an hourly timeseries for a year
 
-year = 2019
-times_daily = pd.date_range(start='%d-01-01' % year, end='%d-12-31' % year, freq='D')
+year = 2017
+times_daily = pd.date_range(start='%d-11-26' % year, end='%d-12-31' % year, freq='D')
 
 # Convert to just the date
 times_daily = pd.to_datetime(times_daily)
@@ -17,7 +17,7 @@ output = pd.DataFrame(index=times_daily)
 for hour in range(0, 24):
     output['%02d' % hour] = 0 
 
-directory = "/global/scratch/users/siennaw/gsi_2024/grib2nc/2019/finished/"
+directory = "/global/scratch/users/siennaw/gsi_2024/grib2nc/%d/finished/" % year
 
 full_days = 0
 files = 0
@@ -52,6 +52,8 @@ print("Number of full days: %d" % full_days)
 print("Number of files: %d" % files)
 output.to_csv('inventory_%d.csv' % year)
 print("Number of missing hours: %d" % len(missing))
+
+print("Percentage of missing hours: %f" % (len(missing) / (24 * len(times_daily))))
 
 fout = "inventory_%d_missing.txt" % year
 

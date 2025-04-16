@@ -19,30 +19,6 @@ echo "Cleaning up directory..."
 rm *.log
 rm GRIBFILE*
 
-echo "Starting on spack.."
-path2spack=/global/scratch/users/siennaw/gsi_2024/compiling/spack
-
-# This sources the environment variables spack needs from the local spack folder
-. ${path2spack}/share/spack/setup-env.sh
-
-# Load in modules 
-spack load bufr
-spack load ip
-spack load sp
-spack load bacio
-spack load w3emc
-spack load sigio
-spack load sfcio
-spack load nemsio
-spack load ncio
-spack load wrf-io
-spack load crtm
-spack load blas                 #not sure if these are needed too
-spack load netcdf-fortran       #not sure if these are needed too
-spack load netcdf-c             #not sure if these are needed too
-spack load jasper
-spack load hdf5
-
 ######### UNGRIB ############
 # Set up + run ungrib
 echo "Linking grib files to directory..."
@@ -50,6 +26,9 @@ echo "Linking grib files to directory..."
 
 echo "Linking HRR-SMOKE VTABLE...."
 ln -sf ungrib/Variable_Tables/Vtable.hrrr_smoke.rap Vtable
+
+echo -e "Trying to convert 8m MASSDEN to Hybrid levels" 
+./convert_grib_levels.sh 
 
 echo -e "\tRunning ungrib..."
 ./ungrib.exe >> ungrib.out 

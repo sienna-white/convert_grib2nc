@@ -1,4 +1,27 @@
 
+# 
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
 
-need to submit set_up_, 
 
+# /global/scratch/users/siennaw/gsi_2024/compiling/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/wps-4.5-5f7rkpkdn2rbw3unhofw7omuvnadukhb/ungrib/g2print.exe /global/scratch/users/rasugrue/convert/smallgrib_NOAA_Nov2024/from_MSU/2018032312/postprd/small_wrfnat_hrconus_00.grib2 
+
+---------------------------------------------------------------------------------------
+ rec Prod Cat Param  Lvl    Lvl      Lvl     Prod    Name            Time          Fcst
+ num Disc     num    code   one      two     Templ                                 hour
+---------------------------------------------------------------------------------------
+   1   0   20   0     103       8       0       0     MASSDEN  2018-12-02_12:00:00   00          
+   2   0   20   0     103       8       0       0     MASSDEN  2018-12-02_12:00:00   00   
+
+
+* pre ~ september 2018 --> format is MASSDEN hybrid level 1 
+* post ~ september 2018 --> bug w/ grepping for line vs. MASSDEN 
+    * also, when grepping for MASSDEN (MASSDEN hybrid level 1)
